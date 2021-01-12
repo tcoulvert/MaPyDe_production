@@ -23,7 +23,10 @@ ROOT 6.13/02.
   export PYTHIA8=/Users/christinawang/programs/pythia8235/
   make HAS_PYTHIA8=true
  ```
-* Run the executable DelphesPythia8(takes LHE file and pythia parameters as input in .cmnd file and outputs ROOT file):
+* Run the executable DelphesPythia8(takes LHE file and pythia parameters as input in .cmnd file and outputs ROOT file), an example cmnd file is in ```cards/configLHE_CMSSW.cmnd```, where the pythia jet matching parameters are copied from a CMS central WJetsToLNu sample:
 ```bash
-./DelphesPythia8 cards/delphes_card_CMS.tcl examples/Pythia8/configLHE.cmnd delphes_nolhe.root
+./DelphesPythia8 cards/delphes_card_CMS.tcl cards/configLHE_CMSSW.cmnd delphes_nolhe.root
 ```
+* Scripts to run in batch:
+  * run ```scripts/create_pythiacmnd.py''' to create the .cmnd file for each signal point
+  * run ```scripts/run_DelphesPythia.py``` to run ```./DelphesPythia8``` for each point

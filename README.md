@@ -28,5 +28,5 @@ ROOT 6.13/02.
 ./DelphesPythia8 cards/delphes_card_CMS.tcl cards/configLHE_CMSSW.cmnd delphes_nolhe.root
 ```
 * Scripts to run in batch:
-  * run ```scripts/create_pythiacmnd.py''' to create the .cmnd file for each signal point
+  * run ```scripts/create_pythiacmnd.py``` to create the .cmnd file for each signal point
   * run ```scripts/run_DelphesPythia.py``` to run ```./DelphesPythia8``` for each point

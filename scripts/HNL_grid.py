@@ -3,16 +3,17 @@ import os,sys
 import numpy as np
 import math
 
-mN    = np.array([0.1, 0.5,1,2,4,6,8,5,10,15,20])
+mN    = np.array([0.1, 0.5,1,2,3, 4,5, 6,8,5,10,15,20])
 Vlnu2 = np.array([1e-09,1e-08,6e-07,4e-07,2e-07,1e-07,8e-06,6e-06,4e-06,2e-06,1e-06,8e-05,6e-05,4e-05,2e-05,1e-05,1e-04, 1e-03, 1e-02,0.1,0.5,0.8])
-#Vlnu2 = np.array([1e-01])
-### for login node
-#madgraph_path = '/storage/user/christiw/login-1/christiw/LLP/MG5_aMC_v2_8_1'
-#card_dir = '/storage/user/christiw/login-1/christiw/LLP/HNL/scripts'
 ### for Christina's macbook pro
-madgraph_path = '/Users/christinawang/programs/MG5_aMC_v2_8_1'
-card_dir = '/Users/christinawang/Desktop/Caltech/Research/LLP/HNL/cards/'
-output_dir = '/Users/christinawang/Desktop/Caltech/Research/LLP/HNL/mg5_grid_1j/'
+#madgraph_path = '/Users/christinawang/programs/MG5_aMC_v2_8_1'
+#card_dir = '/Users/christinawang/Desktop/Caltech/Research/LLP/HNL/cards/'
+#output_dir = '/Users/christinawang/Desktop/Caltech/Research/LLP/HNL/mg5_grid_1j/'
+
+### for login node
+madgraph_path = '/storage/af/user/christiw/login-1/christiw/LLP/CMSSW_9_4_20/src/LLP-Reinterpretation/MG5_aMC_v2_9_3/'
+card_dir = '/storage/af/user/christiw/login-1/christiw/LLP/CMSSW_9_4_20/src/LLP-Reinterpretation/hnl_standalone_production/cards/'
+output_dir='/storage/af/user/christiw/login-1/christiw/LLP/CMSSW_9_4_20/src/LLP-Reinterpretation/hnl_standalone_production/mg5_grid/'
 if not os.path.isdir(output_dir+'HNL_mg5_GRID_e'):os.makedirs(output_dir+'HNL_mg5_GRID_e')
 if not os.path.isdir(output_dir+'HNL_mg5_GRID_mu'):os.makedirs(output_dir+'HNL_mg5_GRID_mu')
 if not os.path.isdir(output_dir+'HNL_mg5_GRID_tau'):os.makedirs(output_dir+'HNL_mg5_GRID_tau')
@@ -32,12 +33,6 @@ for mass in mN:
 	f.write("define j = g u c d s u~ c~ d~ s~\n")
 	f.write("generate p p > w, (w > e n1)\n")
 	f.write("add process p p > w j, (w > e n1)\n")
-#	f.write("add process p p > w+ j j, (w+ > e n1)\n")
-#	f.write("add process p p > w- j j, (w- > e n1)\n")
-#	f.write("add process p p > w+ j j j, (w+ > e n1)\n")
-#	f.write("add process p p > w- j j j, (w- > e n1)\n")
-#	f.write("add process p p > w+ j j j j, (w+ > e n1)\n")
-#	f.write("add process p p > w- j j j j, (w- > e n1)\n")
 	f.write("output "+output_dir+"HNL_GRID_e/HNL_GRID_e-"+str(mass)+"-"+str(mix2)+"\n")
         f.write("launch -i "+output_dir+"HNL_GRID_e/HNL_GRID_e-"+str(mass)+"-"+str(mix2)+"\n")
         f.write("generate_events\n")
@@ -61,7 +56,8 @@ for mass in mN:
         f.write("define w= w+ w-\n")
         f.write("define mu= mu+ mu-\n")
         f.write("generate p p > w, (w > mu n2)\n")
-        f.write("output "+output_dir+"HNL_GRID_mu/HNL_GRID_mu-"+str(mass)+"-"+str(mix2)+"\n")
+        f.write("add process p p > w j, (w > mu n2)\n")
+	f.write("output "+output_dir+"HNL_GRID_mu/HNL_GRID_mu-"+str(mass)+"-"+str(mix2)+"\n")
         f.write("launch -i "+output_dir+"HNL_GRID_mu/HNL_GRID_mu-"+str(mass)+"-"+str(mix2)+"\n")
         f.write("generate_events\n")
         f.write(card_dir+"/param_card_HNL.dat\n")

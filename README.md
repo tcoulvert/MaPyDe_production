@@ -1,6 +1,13 @@
 # hnl_standalone_production
 
 ## Software Installation
+
+### on tier2
+
+install required softwares from LLP-reinterpretation and used CMSSW_9_4_20
+
+### on local computer
+
 MadGraph 2.8.1   
 Pythia 8.235 (8.303 didn't work for me when I tried linking Pythia with Delphes, but if you are running them separately, then it doesn't matter)  
 Delphes3.4.2  
@@ -16,6 +23,8 @@ ROOT 6.13/02.
   * 3 directories created in dir ```mg5_grid```: HNL_GRID_e, HNL_GRID_mu, HNL_GRID_tau
 * ```getCrossSec.py``` uses the MadGraph output directories to obtain/validate the LO cross sections for each MadGraph simulation.
   * usage: python getCrossSec.py [runNum] [lep] [outfileName]
+* ```submit_madgraph.py``` and ```submit_madgraph_process.py``` to submit madgraph jobs in batch, first one only generate more events, second one generate the process and events.
+
 
 ## Delphes
 * After installing Delphes and pythia, compile Delphes with Pythia linked:
@@ -28,5 +37,4 @@ ROOT 6.13/02.
 ./DelphesPythia8 cards/delphes_card_CMS.tcl cards/configLHE_CMSSW.cmnd delphes_nolhe.root
 ```
 * Scripts to run in batch:
-  * run ```scripts/create_pythiacmnd.py``` to create the .cmnd file for each signal point
-  * run ```scripts/run_DelphesPythia.py``` to run ```./DelphesPythia8``` for each point
+  * run ```submit_delphes.py``` to run ```./DelphesPythia8``` for each point in condor

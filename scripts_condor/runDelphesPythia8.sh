@@ -9,15 +9,16 @@ mass=$2
 coupling=$3
 lhe_file=$4
 index=$5
-card=$6
-outputDirectory=$7
-CMSSW_BASE=$8
-homeDir=$9
+maxNEvents=$6
+card=$7
+outputDirectory=$8
+CMSSW_BASE=$9
+homeDir=${10}
 currentDir=`pwd`
 #user=${homeDir#*/data/}
-user=${homeDir#*/storage/user/}
-runDir=${currentDir}/${user}_${analyzerTag}/
-outputfile=hnl_${decay}_${mass}_${coupling}.root
+user=${homeDir#*/storage/af/user/}
+runDir=${currentDir}/${user}/
+outputfile=hnl_${decay}_${mass}_${coupling}_${index}.root
 
 rm -rf ${runDir}
 mkdir -p ${runDir}
@@ -37,10 +38,10 @@ then
 
 	cd ${runDir}
 	echo "entering directory: ${runDir}"
-	echo "${CMSSW_BASE}/src/delphes.tar.gz"
-	if [ -f ${CMSSW_BASE}/src/delphes.tar.gz ]
+	echo "${CMSSW_BASE}/src/cleanUp/delphes_test.tar.gz"
+	if [ -f ${CMSSW_BASE}/src/cleanUp/delphes_test.tar.gz ]
 	then
-		cp $CMSSW_BASE/src/delphes.tar.gz .
+		cp $CMSSW_BASE/src/cleanUp/delphes_test.tar.gz .
 		#get grid proxy
 		export X509_USER_PROXY=${homeDir}x509_proxy
 		echo "${homeDir}x509_proxy"
@@ -48,11 +49,10 @@ then
 
 
 		#run the job
-		tar -zxvf delphes.tar.gz
-		cd Delphes-3.4.2
-		ls setup.sh
-#		bash setup.sh
-
+		tar -zxvf delphes_test.tar.gz
+		#cd Delphes-3.4.2
+		cd delphes_test
+		# setup environment
 		my_pythia8=/storage/af/user/christiw/login-1/christiw/LLP/CMSSW_9_4_20/src/LLP-Reinterpretation/pythia8235
 		echo ${my_pythia8}
 		export PYTHIA8=${my_pythia8}
@@ -69,17 +69,21 @@ then
 		# echo "copied lhe.gz file"
 		# gunzip input.lhe.gz
 
-		# output of run_splitLHE.py
-		cp ${lhe_file}/unweighted_events_split_${index}.lhe input.lhe
+		# run splitLHE.py
+		cp ${lhe_file}unweighted_events.lhe.gz input.lhe.gz
+		cp ${CMSSW_BASE}/src/LLP-Reinterpretation/hnl_standalone_production/scripts/splitLHE.py .
+		python splitLHE.py input.lhe.gz split ${maxNEvents} ${index}
+		ls
 
 		### add LHE file path to configLHE.cmnd
-		echo "Beams:LHEF=input.lhe" >> examples/Pythia8/configLHE_condor.cmnd
+		echo "Beams:LHEF=split_${index}.lhe" >> examples/Pythia8/configLHE_condor.cmnd
 		echo "###################"
 		echo "PYTHIA CONFIGURATION"
 		echo "###################"
 
 		cat examples/Pythia8/configLHE_condor.cmnd
-
+		ls ${card}
+		ls cards
 		echo "./DelphesPythia8 ${card}  examples/Pythia8/configLHE_condor.cmnd ${outputfile}"
 		./DelphesPythia8 ${card}  examples/Pythia8/configLHE_condor.cmnd ${outputfile}
 		ls ${outputfile}

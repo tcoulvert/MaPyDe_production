@@ -1,21 +1,19 @@
-#generate events with eta and pt cuts
+# Written by Giovanna Cottin (gfcottin@gmail.com)
 import os,sys
 import numpy as np
 import math
-mN = np.array([1.5])
 
 
 
-mN    = np.array([0.1, 0.5,1,2,3, 4,4.5, 5, 6,7, 8,5,10,15,20,2.1, 2.2, 2.3, 2.5,3.2,3.5, 3.8, 3.9, 3.6, 3.7, 4.1,4.2,4.5,5.5, 3.55, 4.6, 4.7, 3.3, 3.4, 3.1, 3.05, 2.8, 5.3, 5.4, 5.32, 5.35, 5.38, 1.5, 2.4, 3.3, 3.4, 2.5, 2.6, 2.7])
-#mN = np.array([5.7, 5.8, 5.9])
-Vlnu2 = np.array([0.02,0.04, 1e-09,1e-08,6e-07,4e-07,2e-07,1e-07,9e-6, 8e-06,7e-6, 6e-06,5e-6, 4e-06,3e-6,2e-06,1e-06,9e-05,8e-05,7e-5,6e-05,4e-05,3e-05, 2e-05,1e-05,1e-04, 0.0002,0.0003,0.0004,0.0006, 0.0007, 0.0008, 0.0009,1e-03, 0.002,0.003,0.004, 0.006, 0.007, 0.008, 0.009,1e-02,0.1,0.5,0.8,0.05,0.005,0.0005,5e-5, 1e-4, 5e-5, 1e-5, 5e-6, 1e-6, 5e-7, 1e-7, 8e-7, 6e-7, 7e-7,9e-7,2e-6, 3e-6, 4e-6, 3e-7])
+mN    = np.array([0.1, 0.5,1,2,3, 4,4.5, 5, 6,7, 8,5,10,15,20,2.1, 2.2, 2.3, 2.5,3.2,3.5, 3.8, 3.9, 3.6, 3.7, 4.1,4.2,4.5,5.5, 3.55, 4.6, 4.7, 3.3, 3.4, 3.1, 3.05, 2.8, 5.3, 5.4, 5.32, 5.35, 5.38, 1.5, 2.4, 3.3, 3.4])
+Vlnu2 = np.array([0.02,0.04, 1e-09,1e-08,6e-07,4e-07,2e-07,1e-07,9e-6, 8e-06,7e-6, 6e-06,5e-6, 4e-06,3e-6,2e-06,1e-06,9e-05,8e-05,7e-5,6e-05,4e-05,3e-05, 2e-05,1e-05,1e-04, 0.0002,0.0003,0.0004,0.0006, 0.0007, 0.0008, 0.0009,1e-03, 0.002,0.003,0.004,1e-02,0.1,0.5,0.8,0.05,0.005,0.0005,5e-5, 1e-4, 5e-5, 1e-5, 5e-6, 1e-6, 5e-7, 1e-7, 8e-7, 6e-7, 7e-7,9e-7,2e-6, 3e-6, 4e-6])
 
 
 
 ### for login node
 madgraph_path = '/storage/af/user/christiw/login-1/christiw/LLP/CMSSW_9_4_20/src/LLP-Reinterpretation/MG5_aMC_v2_9_3/'
 card_dir = '/storage/af/user/christiw/login-1/christiw/LLP/CMSSW_9_4_20/src/LLP-Reinterpretation/hnl_standalone_production/cards/'
-output_dir='/storage/af/user/christiw/login-1/christiw/LLP/CMSSW_9_4_20/src/LLP-Reinterpretation/hnl_standalone_production/mg5_grid_2j/'
+output_dir='/storage/af/user/christiw/login-1/christiw/LLP/CMSSW_9_4_20/src/LLP-Reinterpretation/hnl_standalone_production/mg5_grid_2j_nocut/'
 if not os.path.isdir(output_dir+'HNL_mg5_GRID_e'):os.makedirs(output_dir+'HNL_mg5_GRID_e')
 if not os.path.isdir(output_dir+'HNL_mg5_GRID_mu'):os.makedirs(output_dir+'HNL_mg5_GRID_mu')
 if not os.path.isdir(output_dir+'HNL_mg5_GRID_tau'):os.makedirs(output_dir+'HNL_mg5_GRID_tau')
@@ -47,10 +45,6 @@ for mass in mN:
         f.write("set MASS 9900014 1.000000e+03\n") #decouple other N
         f.write("set MASS 9900016 1.000000e+03\n")
         f.write("set DECAY 9900012 Auto\n")
-        f.write("set cut_decays True \n")
-        f.write("set pt_min_pdg 9900012 100 \n")
-        f.write("set eta_min_pdg 9900012 0.5 \n")
-        f.write("set eta_max_pdg 9900012 3 \n")
 	f.close()
 #Mixing in muon sector
 for mass in mN:
@@ -76,10 +70,6 @@ for mass in mN:
         f.write("set MASS 9900014 "+str(mass)+"\n") 
         f.write("set MASS 9900016 1.000000e+03\n")
         f.write("set DECAY 9900014 Auto\n")
-	f.write("set cut_decays True \n")
-        f.write("set pt_min_pdg 9900014 100 \n")
-        f.write("set eta_min_pdg 9900014 0.5 \n")
-        f.write("set eta_max_pdg 9900014 3 \n")
         f.close()
 #Mixing in tau sector
 for mass in mN:
@@ -106,9 +96,5 @@ for mass in mN:
         f.write("set MASS 9900014 1.000000e+03\n") 
         f.write("set MASS 9900016 "+str(mass)+"\n")
         f.write("set DECAY 9900016 Auto\n")
-        f.write("set cut_decays True \n")
-        f.write("set pt_min_pdg 9900016 100 \n")
-        f.write("set eta_min_pdg 9900016 0.5 \n")
-        f.write("set eta_max_pdg 9900016 3 \n")
         f.close()
 

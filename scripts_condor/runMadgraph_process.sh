@@ -10,7 +10,6 @@ coupling=$3
 inputDirectory=$4
 mg5=$5
 runNum=$6
-runNum=`python -c "print ${runNum}+500"`
 nEvents=$7
 CMSSW_BASE=$8
 homeDir=$9
@@ -47,15 +46,11 @@ then
 
 		tar -zxvf MG5_aMC_v2_9_3.tar.gz
 		mg5=MG5_aMC_v2_9_3/bin/mg5_aMC
-		input=${inputDirectory}/HNL_mg5_GRID_${decay}_generate/HNL_mg5_GRID_${decay}-${mass}-${coupling}
+		input=${inputDirectory}/HNL_mg5_GRID_${decay}/HNL_mg5_GRID_${decay}-${mass}-${coupling}
 		ls ${input}
 		cp ${input} input.dat
 		echo "copied madgraph dat file"
 		date
-
-	        sed -i "s/generate_events/generate_events run${runNum}/g" input.dat
-	        sed -i "s/launch -i/launch -i HNL_GRID_${decay}-${mass}-${coupling}/g" input.dat
-		echo "set nevents ${nEvents}" >> input.dat		
 
 
 		echo "###############"
@@ -63,11 +58,6 @@ then
 		echo "###############"
 		cat input.dat
 		
-
-		### copy grid
-		cp -r ${inputDirectory}/HNL_GRID_${decay}/HNL_GRID_${decay}-${mass}-${coupling} .
-
-
 		echo "python ${mg5} input.dat"
 		python ${mg5} input.dat
 
@@ -75,12 +65,11 @@ then
 		echo "madgraph finished"
 		date
 
-		cp -r HNL_GRID_${decay}-${mass}-${coupling}/Events/run${runNum} ${inputDirectory}/HNL_GRID_${decay}/HNL_GRID_${decay}-${mass}-${coupling}/Events/
 
 		sleep 2
 		echo "I slept for 2 second"
 
-		if [ -d ${inputDirectory}/HNL_GRID_${decay}/HNL_GRID_${decay}-${mass}-${coupling}/Events/run${runNum} ]
+		if [ -d ${inputDirectory}/HNL_GRID_${decay}/HNL_GRID_${decay}-${mass}-${coupling} ]
 		then
 			echo "job finished"
 		else

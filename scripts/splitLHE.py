@@ -5,13 +5,14 @@ import gzip
 import math
 
 if len(sys.argv) < 4:
-    print("Three parameters are required: python splitLHE.py [input filename] [output filename] [max number of events per output file]")
+    print("Three parameters are required: python splitLHE.py [input filename] [output filename] [max number of events per output file] [index(optional)]")
     exit()
 
 inputfilename = sys.argv[1]
 outputfilename = sys.argv[2]
 maxNEvents = int(sys.argv[3])
-
+if len(sys.argv)==4:index = -1
+else:index = int(sys.argv[4])
 print ("Input file: " + inputfilename)
 print ("Output files: " + outputfilename)
 print ("Max Number of Events in Output: " + str(maxNEvents))
@@ -23,12 +24,6 @@ currentFileEventIndex = -1;
 
 headerLineIndex = -1
 fileEndLine = 0
-#
-# outputfiles = [outputfilename+"_0"+".hepmc"]
-# tempOutputfile = open(outputfiles[0], "w")
-#
-# for l in headerLines:
-#     tempOutputfile.write(l+"\n")
 headerLines = []
 fileEndLine = "</LesHouchesEvents>"
 event_start_indices = []
@@ -46,12 +41,11 @@ for line in inputfile:
             if fileIndex > 0:
                 tempOutputFile.write(fileEndLine)
                 tempOutputFile.close()
-                print("Closing file " + tempOutputFileName)
-
+                if fileIndex % 10 == 0: print("Closing file " + tempOutputFileName)
+		if fileIndex == index+1:break
             #Open new file
             tempOutputFileName = outputfilename+"_"+str(fileIndex)+".lhe"
             tempOutputFile = open(tempOutputFileName, "w")
-            print("Opening new file " + tempOutputFileName)
             # Write header
             for l in headerLines:
                 tempOutputFile.write(l)
@@ -64,7 +58,7 @@ for line in inputfile:
     lineIndex = lineIndex + 1 #increment line counter
 
 
-assert(len(event_start_indices) == len(event_end_indices))
+#assert(len(event_start_indices) == len(event_end_indices))
 nFiles = int(math.ceil(1.0*len(event_start_indices)/maxNEvents))
 print("NEvents: "+str(len(event_start_indices)))
 print("nFiles: "+str(nFiles))

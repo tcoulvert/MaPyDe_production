@@ -14,7 +14,8 @@ if len(sys.argv)>1:
     outfile=sys.argv[3] if len(sys.argv)>3 else 'mg5_grid_'+lep+'_sigma_out.txt' #Outfile **can give full path**
 else:
     sys.exit("NOT ENOUGH ARGUMENTS! USAGE: python getCrossSec.py [runNum] [flavor] [outputName]")
-path = '/Users/christinawang/Desktop/Caltech/Research/LLP/HNL/mg5_grid/HNL_GRID_'+lep+'/'
+path = '/storage/af/user/christiw/login-1/christiw/LLP/CMSSW_9_4_20/src/LLP-Reinterpretation/hnl_standalone_production/mg5_grid_2j_etacut/HNL_GRID_'+lep+'/'
+print(path)
 subfolders=[x for x in os.listdir(path) if os.path.isdir(path+x)]
 subfolders.sort()
 print(subfolders)
@@ -32,7 +33,6 @@ for ss in subfolders:
     sss=ss.split('-')
     print(sss)
     p1=sss[1]
-    print(p1)
     i0=3 if ''==sss[2] else 2
     if 'e' in sss[i0] and i0!=len(sss)-1:
         p2=sss[i0]+'-'+sss[i0+1]
@@ -44,16 +44,17 @@ for ss in subfolders:
     fp=path+ss+'/Events/run_{0:0>2}'.format(rn)
     print(fp)
     try:
-        file=[x for x in os.listdir(fp+'/') if 'txt' in x][0] #read from banner
-        print(file)
-        with open(fp+'/'+file) as ff:
+        filename=[x for x in os.listdir(fp+'/') if 'banner.txt' in x][0] #read from banner
+        print(fp+'/'+filename)
+        if not os.path.isfile(fp+'/'+filename):continue
+        with open(fp+'/'+filename) as ff:
             for l in ff:
                 if '#  Integrated weight (pb)  :' in l:
                    sig=l.split()[-1]
                    # print l.split()
                 if 'DECAY  '+pid in l:
                     decayWidth=l.split()[-1]
-                    print(decayWidth) 
+                    print(decayWidth, hbar*c/float(decayWidth)) 
         out['p1'].append(p1)
         out['p2'].append(p2)
         out['sig'].append(sig)
@@ -69,12 +70,12 @@ for ss in subfolders:
 #print out
 #for key in out:
 #    out[key]=out[key][idxs]
-
+assert(len(out['p1'])==len(out['p2']) == len(out['sig']) == len(out['gamma']) == len(out['ctau']))
 with open(outfile,'w') as ff:
     # ff.write('{0:10}{1:10}{2:25}{3:5}\n'.format('p1','p2','sigma','run'))
     ff.write('mass[GeV] V sig gamma[GeV] ctau[m]\n')
     for i in range(len(out['p1'])):
-        ff.write('{0:10}{1:10}{2:25}{3:25}{4:5}\n'.format(out['p1'][i], out['p2'][i], out['sig'][i], out['gamma'][i],out['ctau'][i]))
+	ff.write('{0:10}{1:10}{2:25}{3:25}{4:5}\n'.format(out['p1'][i], out['p2'][i], out['sig'][i], out['gamma'][i],out['ctau'][i]))
         ##ff.write('{0:10}{1:10}{2:25}{3:5}\n'.format(out['p1'][i],out['p2'][i],out['sig'][i],out['run'][i]))
 
 '''
@@ -88,54 +89,3 @@ sig=a[:,2]
 run=a[:,3]
 '''
 
-###import sys
-###import os
-###import gzip
-###import numpy as np###
-
-####To be adapted for mu or tau mixing
-###if len(sys.argv)>1:
-###    mN      = sys.argv[1] # mass from file name 
-###    VlN2    = sys.argv[2] # mixing2 from file name
-###    outfile = sys.argv[3] if len(sys.argv)>3 else "HNL_e_"+mN+"_"+VlN2+"_crossSec.txt" #Outfile **can give full path**###
-
-###path    = "/Users/chubicottin/Desktop/HNL/MG5_aMC_v2_6_7/HNL_GRID_e/"###
-
-###subfolders=[x for x in os.listdir(path) if os.path.isdir(path+x)]
-###print(subfolders)###
-
-###out     = {'sig':[],'mass':[],'mixing':[], 'gamma':[]}
-#### out={'sig':[]}###
-
-###for ss in subfolders:
-###    sss=ss.split('-')
-###    run=sss[1]
-###    mixing = sss[2]
-###    fp=path+ss
-###    print(sss)
-###    
-###    print(run)
-###    print(mixing)
-###    #print(fp)
-###    
-###    with gzip.open(fp+'/Events/run_01/unweighted_events.lhe.gz') as ff:
-###        print(ff)
-###        for l in ff:
-###            if '#  Integrated weight (pb)  :' in l:
-###            	print(l)
-###                sig=l.split()[-1]
-###                print(sig)
-###            if '# mn1' in l:
-###                mass=l.split()[1]
-###                print(mass)
-###            if 'DECAY  9900012' in l:
-###                decayWidth=l.split()[-1]
-###                print(decayWidth) 
-###    out['sig'].append(sig)
-###    out['mass'].append(mass)
-###    out['mixing'].append(mixing)
-###    out['gamma'].append(decayWidth)###
-
-###with open(outfile,'w') as ff:
-###    for i in range(len(out['sig'])):
-###        ff.write('{0} {1} {2} {3}\n'.format(out['sig'][i], out['mass'][i], out['mixing'][i], out['gamma'][i]))

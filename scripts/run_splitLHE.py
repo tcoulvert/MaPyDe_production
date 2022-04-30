@@ -7,9 +7,9 @@ maxNEvents = 5000
 
 coupling = {}
 coupling[1] = [0.01, 0.001, 0.0001, 1e-05]
-coupling[2] = [0.01, 0.001, 0.0001, 1e-05]
-coupling[3] = [0.01, 0.001, 0.0001, 1e-05]
-coupling[4] = [0.01, 0.001, 0.0001, 1e-05]
+#coupling[2] = [0.01, 0.001, 0.0001, 1e-05]
+#coupling[3] = [0.01, 0.001, 0.0001, 1e-05]
+#coupling[4] = [0.01, 0.001, 0.0001, 1e-05]
 
 for decay in ['e', 'mu', 'tau']:
 	if not decay == 'e':continue

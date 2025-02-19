@@ -9,10 +9,10 @@ inputFile = '/storage/af/user/tsievert/topNet/SPAtop/simulation/MaPyDe_productio
 mg5 = '/usr/MG5_aMC_v3_5_7/bin/mg5_aMC'
 python = '/usr/bin/python3.10'
 outputDir = '/storage/af/user/tsievert/topNet/SPAtop/simulation/submit/madgraph/ttbar_hadronic'
-nEventsPerJob = 100_000
-nJobs = 2_000_000 // nEventsPerJob
-# nEventsPerJob = 100
-# nJobs = (200 // nEventsPerJob)
+# nEventsPerJob = 100_000
+# nJobs = 2_000_000 // nEventsPerJob
+nEventsPerJob = 1_000
+nJobs = (2_000 // nEventsPerJob)
 
 
 file_name = 'submit_madgraph.jdl'

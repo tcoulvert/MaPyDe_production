@@ -20,53 +20,52 @@ mkdir -p ${runDir}
 
 if [ -f ${mg5} ] && [ -f ${inputFile} ]
 then
-	echo "base directory"
-	ls .
-	pwd
-
 	cd ${runDir}
 	echo "entering directory: ${runDir}"
+
+
+	echo "------------------------"
 
 	input=${inputFile}
 	cp ${input} input.dat
 	echo "set run_card iseed ${ProcID}" >> input.dat
 	echo "set run_card nevents ${nEvents}" >> input.dat
-
 	echo "###############"
 	echo "input.dat"
 	echo "###############"
 	cat input.dat
+	echo "###############"
+	echo "###############"
 	
 	echo "python ${mg5} input.dat"
 	${python} ${mg5} input.dat
-	# echo "${mg5} input.dat"
-	# ${mg5} input.dat
 
-	echo "###############"
+	echo "------------------------"
+
 	##^_^##
 	echo "madgraph finished"
 	date
 
-	echo "printing out runDir"
-	ls ${runDir}
-	echo "printing out runDir/.."
-	ls ${runDir}/..
+	echo "------------------------"
+
+	sleep 2
+	echo "I slept for 2 seconds"
+
+	echo "------------------------"
 
 	##job finished, copy file to T2
 	echo "copying output file to ${outputDirectory}"
 	mkdir -p ${outputDirectory}
 	cp ${runDir}/ttbar_hadronic/Events/run_01/unweighted_events.lhe.gz ${outputDirectory}/${outputFile}
 
-
-	sleep 2
-	echo "I slept for 2 seconds"
-
-	# if [ -d ${inputDirectory}/HNL_GRID_${decay}/HNL_GRID_${decay}-${mass}-${coupling} ]
-	# then
-	# 	echo "job finished"
-	# else
-	# 	echo "job failed not copied"
-	# fi
+	if [ -f ${outputDirectory}/${outputFile} ]
+	then
+		echo ${outputFile} "copied"
+	else
+		echo ${outputFile} "not copied"
+	fi
+	
+	echo "------------------------"
 else
 	echo echo "WWWWYYYY ============= failed to access mg5, job anandoned"
 fi

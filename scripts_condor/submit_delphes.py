@@ -13,9 +13,6 @@ pythia_card = '/storage/af/user/tsievert/topNet/SPAtop/simulation/MaPyDe_product
 delphes_card = '/storage/af/user/tsievert/topNet/SPAtop/simulation/MaPyDe_production/cards/delphes_card_CMS_vfj.dat'
 lhe_dirpath = "/storage/af/user/tsievert/topNet/SPAtop/simulation/submit/madgraph/ttbar_hadronic"
 outputDir = "/storage/af/user/tsievert/topNet/SPAtop/simulation/submit/pythiadelphes/ttbar_hadronic"
-pythiaDir = "/usr"
-delphesDir = "/usr/Delphes-3.5.0"
-python = '/usr/bin/python3.10'
 
 
 # nEventsPerJobMadgraph = 100_000
@@ -23,25 +20,21 @@ python = '/usr/bin/python3.10'
 # nMadgraphJobs = totalEvents // nEventsPerJobMadgraph  # number of madgraph jobs
 # maxNEvents = 10_000
 # nJobs = totalEvents // maxNEvents
-nEventsPerJobMadgraph = 100
-totalEvents = 200
+nEventsPerJobMadgraph = 1_000
+totalEvents = 2_000
 nMadgraphJobs = totalEvents // nEventsPerJobMadgraph  # number of madgraph jobs
-maxNEvents = 50
+maxNEvents = 500
 nJobs = totalEvents // maxNEvents  # number of pythia/delphes jobs
 nJobsPerMadgraphJob = nJobs // nMadgraphJobs
-
-# os.system("rm -rf log/HNL-delphes-{}-{}-{}-{}*".format(run, decay, m, c))
-# os.system("rm -rf submit/delphes-{}-{}-{}-{}*".format(run, decay, m, c))
 
 file_name = 'submit_pythia_delphes.jdl'
 f = open(file_name, "w")
 f.write("Universe = vanilla \n")
 f.write("Executable = ../MaPyDe_production/scripts_condor/runDelphesPythia8.sh \n")
-#outputDir = '/storage/af/user/christiw/delphes_output/v11/hnl/{}/'.format(run)+decay+'/grid-{}-{}-{}/'.format(decay,m,c)
 
 print(outputDir)
-f.write("Arguments = {} $(ProcId) {} {} {} {} {} {} {} {} {}/ \n".format(
-    lhe_dirpath, maxNEvents, nJobsPerMadgraphJob, pythia_card, delphes_card, outputDir, pythiaDir, delphesDir, python, os.getenv('HOME')), 
+f.write("Arguments = {} $(ProcId) {} {} {} {} {} {}/ \n".format(
+    lhe_dirpath, maxNEvents, nJobsPerMadgraphJob, pythia_card, delphes_card, outputDir, os.getenv('HOME')), 
 )
 
 f.write("Log = log/pythiadelphes.log \n")

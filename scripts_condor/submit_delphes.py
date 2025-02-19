@@ -9,8 +9,8 @@ import numpy as np
 coupling = {}
 
 
-pythia_card = '/storage/af/user/tsievert/topNet/SPAtop/simulation/MaPyDe_production/LHE_condor.cmnd'
-delphes_card = '/storage/af/user/tsievert/topNet/SPAtop/simulation/MaPyDe_production/cards/delphes_card_CMS_vfj.dat'
+pythia_card = '/storage/af/user/tsievert/topNet/SPAtop/simulation/MaPyDe_production/cards/LHE_condor.cmnd'
+delphes_card = '/storage/af/user/tsievert/topNet/SPAtop/simulation/MaPyDe_production/cards/delphes_card_CMS_vfj.tcl'
 lhe_dirpath = "/storage/af/user/tsievert/topNet/SPAtop/simulation/submit/madgraph/ttbar_hadronic"
 outputDir = "/storage/af/user/tsievert/topNet/SPAtop/simulation/submit/pythiadelphes/ttbar_hadronic"
 

@@ -5,7 +5,7 @@ import os
 coupling = {}
 
 
-inputFile = '/storage/af/user/tsievert/topNet/SPAtop/simulation/MaPyDe_production/ttbar_hadronic.txt'
+madgraphCard = '/storage/af/user/tsievert/topNet/SPAtop/simulation/MaPyDe_production/cards/ttbar_hadronic.txt'
 mg5 = '/usr/MG5_aMC_v3_5_7/bin/mg5_aMC'
 python = '/usr/bin/python3.10'
 outputDir = '/storage/af/user/tsievert/topNet/SPAtop/simulation/submit/madgraph/ttbar_hadronic'
@@ -19,7 +19,7 @@ file_name = 'submit_madgraph.jdl'
 f = open(file_name, "w")
 f.write("Universe = vanilla \n")
 f.write("Executable = ../MaPyDe_production/scripts_condor/runMadgraph_process.sh \n")
-f.write("Arguments = {} {} {} {} {} $(ProcID) {}/ \n".format(inputFile, outputDir, mg5, python, nEventsPerJob, os.getenv('HOME')))
+f.write("Arguments = {} {} {} {} {} $(ProcID) {}/ \n".format(madgraphCard, outputDir, mg5, python, nEventsPerJob, os.getenv('HOME')))
 
 f.write("Log = log/madgraph.log \n")
 f.write("Output = log/madgraph.$(ProcID).out \n")

@@ -48,16 +48,16 @@ then
 	echo "###################"
 
 	### add LHE file path to configLHE.cmnd
-	cp ${delphesCard} config_delphes.dat
+	cp ${delphesCard} config_delphes.tcl
 	echo "###################"
 	echo "DELPHES CONFIGURATION"
 	echo "###################"
-	cat config_delphes.dat
+	cat config_delphes.tcl
 	echo "###################"
 	echo "###################"
 	
-	echo "${DELPHESSYS}/DelphesPythia8 config_delphes.dat config_pythia.cmnd ${outputFile}"
-	${DELPHESSYS}/DelphesPythia8 config_delphes.dat config_pythia.cmnd ${outputFile}
+	echo "${DELPHESSYS}/DelphesPythia8 config_delphes.tcl config_pythia.cmnd ${outputFile}"
+	${DELPHESSYS}/DelphesPythia8 config_delphes.tcl config_pythia.cmnd ${outputFile}
 
 	echo "------------------------"
 	

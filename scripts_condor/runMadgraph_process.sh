@@ -4,83 +4,71 @@ hostname
 echo "Job started"
 date
 start_time=`date +%s`
-decay=$1
-mass=$2
-coupling=$3
-inputDirectory=$4
-mg5=$5
-runNum=$6
-nEvents=$7
-CMSSW_BASE=$8
-homeDir=$9
+inputFile=$1
+outputDirectory=$2
+mg5=$3
+python=$4
+nEvents=$5
+ProcID=$6
+homeDir=$7
 currentDir=`pwd`
-runDir=${currentDir}/christiw/
+runDir=${currentDir}/madgraph/
+outputFile=ttbar_hadronic_${ProcID}.lhe.gz
 
 rm -rf ${runDir}
 mkdir -p ${runDir}
 
-if [ -f /cvmfs/cms.cern.ch/cmsset_default.sh ]
+if [ -f ${mg5} ] && [ -f ${inputFile} ]
 then
-	#setup cmssw
-	#cd $CMSSW_BASE/src/
-	cd ${CMSSW_BASE}/src/
-	workDir=`pwd`
-	echo "entering directory: ${workDir}"
-	ulimit -c 0
-	source /cvmfs/cms.cern.ch/cmsset_default.sh
-	export SCRAM_ARCH=slc7_amd64_gcc630
-	eval `scram runtime -sh`
-	echo `which root`
-
-	#get grid proxy
-	export X509_USER_PROXY=${homeDir}x509_proxy
-	echo "${homeDir}x509_proxy"
-	voms-proxy-info
+	echo "base directory"
+	ls .
+	pwd
 
 	cd ${runDir}
 	echo "entering directory: ${runDir}"
-	echo "${CMSSW_BASE}/src/MG5_aMC_v2_9_3.tar.gz"
-	if [ -f ${CMSSW_BASE}/src/MG5_aMC_v2_9_3.tar.gz ]
-	then
-		cp $CMSSW_BASE/src/MG5_aMC_v2_9_3.tar.gz .
 
-		tar -zxvf MG5_aMC_v2_9_3.tar.gz
-		mg5=MG5_aMC_v2_9_3/bin/mg5_aMC
-		input=${inputDirectory}/HNL_mg5_GRID_${decay}/HNL_mg5_GRID_${decay}-${mass}-${coupling}
-		ls ${input}
-		cp ${input} input.dat
-		echo "copied madgraph dat file"
-		date
+	input=${inputFile}
+	cp ${input} input.dat
+	echo "set run_card iseed ${ProcID}" >> input.dat
+	echo "set run_card nevents ${nEvents}" >> input.dat
+
+	echo "###############"
+	echo "input.dat"
+	echo "###############"
+	cat input.dat
+	
+	echo "python ${mg5} input.dat"
+	${python} ${mg5} input.dat
+	# echo "${mg5} input.dat"
+	# ${mg5} input.dat
+
+	echo "###############"
+	##^_^##
+	echo "madgraph finished"
+	date
+
+	echo "printing out runDir"
+	ls ${runDir}
+	echo "printing out runDir/.."
+	ls ${runDir}/..
+
+	##job finished, copy file to T2
+	echo "copying output file to ${outputDirectory}"
+	mkdir -p ${outputDirectory}
+	cp ${runDir}/ttbar_hadronic/Events/run_01/unweighted_events.lhe.gz ${outputDirectory}/${outputFile}
 
 
-		echo "###############"
-		echo "input.dat"
-		echo "###############"
-		cat input.dat
-		
-		echo "python ${mg5} input.dat"
-		python ${mg5} input.dat
+	sleep 2
+	echo "I slept for 2 seconds"
 
-		##^_^##
-		echo "madgraph finished"
-		date
-
-
-		sleep 2
-		echo "I slept for 2 second"
-
-		if [ -d ${inputDirectory}/HNL_GRID_${decay}/HNL_GRID_${decay}-${mass}-${coupling} ]
-		then
-			echo "job finished"
-		else
-			echo "job failed not copied"
-		fi
-	else
-		echo echo "WWWWYYYY ============= failed to access file mg5, job anandoned"
-	fi
-
+	# if [ -d ${inputDirectory}/HNL_GRID_${decay}/HNL_GRID_${decay}-${mass}-${coupling} ]
+	# then
+	# 	echo "job finished"
+	# else
+	# 	echo "job failed not copied"
+	# fi
 else
-	echo "VVVVYYYY ============= failed to access file /cvmfs/cms.cern.ch/cmsset_default.sh, job abandoned"
+	echo echo "WWWWYYYY ============= failed to access mg5, job anandoned"
 fi
 
 cd ${currentDir}

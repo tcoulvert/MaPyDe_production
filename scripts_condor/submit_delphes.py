@@ -15,15 +15,10 @@ lhe_dirpath = "/storage/af/user/tsievert/topNet/SPAtop/simulation/submit/madgrap
 outputDir = "/storage/af/user/tsievert/topNet/SPAtop/simulation/submit/pythiadelphes/ttbar_hadronic"
 
 
-# nEventsPerJobMadgraph = 100_000
-# totalEvents = 2_000_000
-# nMadgraphJobs = totalEvents // nEventsPerJobMadgraph  # number of madgraph jobs
-# maxNEvents = 10_000
-# nJobs = totalEvents // maxNEvents
-nEventsPerJobMadgraph = 1_000
-totalEvents = 2_000
+nEventsPerJobMadgraph = 100_000
+totalEvents = 2_000_000
 nMadgraphJobs = totalEvents // nEventsPerJobMadgraph  # number of madgraph jobs
-maxNEvents = 500
+maxNEvents = 10_000
 nJobs = totalEvents // maxNEvents  # number of pythia/delphes jobs
 nJobsPerMadgraphJob = nJobs // nMadgraphJobs
 

@@ -39,7 +39,8 @@ then
 
 	### add LHE file path to configLHE.cmnd
 	cp ${pythiaCard} config_pythia.cmnd
-	echo -e "\nBeams:LHEF=split_${ProcID}.lhe" >> config_pythia.cmnd
+	echo -e "\nMain:numberOfEvents = ${maxNEvents}" >> config_pythia.cmnd
+	echo -e "\nBeams:LHEF = split_${ProcID}.lhe" >> config_pythia.cmnd
 	echo "###################"
 	echo "PYTHIA CONFIGURATION"
 	echo "###################"

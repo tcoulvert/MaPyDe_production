@@ -1,0 +1,189 @@
+# FROM ubuntu:latest
+
+# ### SuperUser (SU) Home Directory ###
+# WORKDIR /root
+
+# ### Install Linux Tools ###
+
+# # Install Basic Tools #
+# RUN apt-get --assume-yes update
+# RUN apt-get --assume-yes install build-essential
+# # RUN add-apt-repository --assume-yes universe
+# RUN apt-get --assume-yes update
+# RUN apt-get --assume-yes install wget
+# RUN apt-get --assume-yes install gfortran
+# RUN apt-get --assume-yes install curl
+# RUN apt-get --assume-yes install vim
+# RUN apt-get --assume-yes install less
+# RUN apt-get --assume-yes install cmake
+# RUN apt-get --assume-yes install rsync
+# RUN apt-get --assume-yes install gnuplot
+# RUN apt-get --assume-yes install ghostscript
+# RUN apt-get --assume-yes install locate
+# RUN apt-get --assume-yes install htop
+# RUN apt-get --assume-yes install git
+
+# # Install Python Packages #
+# RUN apt-get --assume-yes install python3
+# RUN apt-get --assume-yes install python3-pip
+# RUN pip3 install six
+# RUN apt-get --assume-yes install python2
+# RUN curl https://bootstrap.pypa.io/pip/2.7/get-pip.py --output get-pip.py
+# RUN python2 get-pip.py
+
+# # Install MG5 NLO Dependencies #
+# RUN apt-get --assume-yes install bc
+
+# # Install ROOT Dependencies #
+# RUN apt-get --assume-yes install libx11-dev
+# RUN apt-get --assume-yes install libxpm-dev
+# RUN apt-get --assume-yes install libxft-dev
+# RUN apt-get --assume-yes install libxext-dev
+# RUN apt-get --assume-yes install libssl-dev
+
+# ### SuperUser (SU) src Directory ###
+# WORKDIR /usr/src
+# RUN mkdir tar_files
+
+# ### Install HEP Packages ###
+
+# # INSTALL ROOT (v'latest-stable' on source git, v6.32.10 as of 2025-02-12) #
+# RUN git clone --branch latest-stable --depth=1 https://github.com/root-project/root.git
+# RUN mkdir root-build \
+#     && cd root-build && cmake -DCMAKE_INSTALL_PREFIX=/usr/root /usr/src/root \
+#     && cmake --build . --target install
+# RUN export ROOTSYS=/usr/root \
+#     && export PATH=${PATH}:${ROOTSYS}/bin/ \
+#     && export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${ROOTSYS}/lib/
+
+FROM heproot:latest
+# Loosely following the ordering & contents of:
+#   https://hackmd.io/@D2NCN-LxSNiAK6etDgTKYA/H1dyeyj1D#Monte-Carlo-Generators-and-Simulation-Tools
+
+### SuperUser (SU) src Directory ###
+WORKDIR /usr/src
+RUN mkdir tar_files
+
+# EXPORT ROOT & PYTHON #
+SHELL ["/bin/bash", "-c"]
+ENV ROOTSYS "/usr/root"
+ENV PYTHON "/usr/bin/python3.10"
+ENV PATH "$PATH:$ROOTSYS/bin:$PYTHON"
+ENV LD_LIBRARY_PATH "$LD_LIBRARY_PATH:$ROOTSYS/lib"
+
+# INSTALL LHAPDF6 (v6.5.5) #
+RUN wget https://lhapdf.hepforge.org/downloads/?f=LHAPDF-6.5.5.tar.gz -O LHAPDF_6_5_5.tar.gz \
+    && tar -xzf LHAPDF_6_5_5.tar.gz 
+RUN mv LHAPDF_6_5_5.tar.gz /usr/src/tar_files/ \
+    && cd LHAPDF-6.5.5 \
+    && ./configure --prefix=/usr \
+    && make install 
+# -> install PDFs from LHAPDF website (in /share?) or setup CernVM-FS??
+# INSTALL FASTJET3 (v?) #
+RUN wget https://fastjet.fr/repo/fastjet-3.4.3.tar.gz -O FASTJET_3_4_3.tar.gz \
+    && tar -xzf FASTJET_3_4_3.tar.gz
+RUN mv FASTJET_3_4_3.tar.gz /usr/src/tar_files/ \
+    && cd fastjet-3.4.3 \
+    && ./configure --prefix=/usr --enable-cmsinterativecone \
+    && make install 
+# INSTALL FASTJET-contrib (v1.100) #
+RUN wget http://fastjet.hepforge.org/contrib/downloads/fjcontrib-1.100.tar.gz -O FJCONTRIB_1_1_0.tar.gz \
+    && tar -xzf FJCONTRIB_1_1_0.tar.gz
+RUN mv FJCONTRIB_1_1_0.tar.gz tar_files/ \
+    && cd fjcontrib-1.100 \
+    && ./configure --fastjet-config=/usr/src/fastjet-3.4.3/fastjet-config \
+    && make install
+
+# INSTALL HEPMC2 (v2.06.09) #
+# RUN mkdir HepMC_v2.06.09
+# RUN cd HepMC_v2.06.09/ \
+#     && wget http://hepmc.web.cern.ch/hepmc/releases/hepmc2.06.09.tgz \
+#     && tar -xf hepmc2.06.09.tgz
+# RUN cd HepMC_v2.06.09/hepmc2.06.09/ \
+#     && ./configure --prefix=/usr --with-momentum=GEV --with-length=CM \
+#     && make install
+
+# INSTALL HEPMC3 (v3.2.2) #   --> # https://gitlab.cern.ch/hepmc/HepMC3
+# RUN wget https://hepmc.web.cern.ch/hepmc/releases/HepMC3-3.3.0.tar.gz -O HEPMC3_3_3_0.tar.gz \
+#     && tar -xzf HEPMC3_3_3_0.tar.gz
+# RUN mv HEPMC3_3_3_0.tar.gz tar_files/ \
+#     && cd HepMC3-3.3.0 \
+#     && ./configure --prefix=/usr --with-momentum=GEV --with-length=MM \
+#     && make install
+
+# EXPORT LHAPDF & FASTJET TO PATH #
+ENV LHAPDFSYS "/usr"
+ENV FASTJETSYS "/usr"
+# ENV PATH "$PATH:$LHAPDFSYS/bin:$FASTJETSYS/bin"
+# ENV LD_LIBRARY_PATH "$LD_LIBRARY_PATH:$LHAPDFSYS/lib:$FASTJETSYS/lib"
+
+WORKDIR /usr
+# INSTALL MadGraph5_aMC@NLO (v2.9.15) #
+#  -> long-term stable release
+# RUN mkdir MadGraph5_v2.9.15
+# RUN cd MadGraph5_v2.9.15/ \
+#     && wget https://launchpad.net/mg5amcnlo/3.0/3.5.x/+download/MG5aMC_LTS_2.9.15.tgz \
+#     && tar -xf MG5aMC_LTS_2.9.15.tgz
+# RUN cd MadGraph5_v2.9.15/MG5aMC_LTS_2.9.15/ \
+#     && ./configure --prefix=/usr \
+#     && make install
+##          OR          ##
+# INSTALL MadGraph5_aMC@NLO (v3.5.7) #
+#  -> cutting-edge stable release
+RUN wget https://launchpad.net/mg5amcnlo/3.0/3.6.x/+download/MG5_aMC_v3.5.7.tar.gz -O MG5_AMC_3_5_7.tar.gz \
+    && tar -xzf MG5_AMC_3_5_7.tar.gz
+RUN mv MG5_AMC_3_5_7.tar.gz /usr/src/tar_files/
+
+# INSTALL BOOST (v) #
+# RUN wget https://archives.boost.io/release/1.87.0/source/boost_1_87_0.tar.gz -O BOOST_1_87_0.tar.gz \
+#     && tar -xzf BOOST_1_87_0.tar.gz
+# RUN mv BOOST_1_87_0.tar.gz /usr/src/tar_files/
+
+# EXPORT MADGRAPH & BOOST TO PATH #
+ENV MADGRAPHSYS "/usr/MG5_aMC_v3_5_7"
+ENV PATH "$PATH:$MADGRAPHSYS/bin"
+ENV LD_LIBRARY_PATH "$LD_LIBRARY_PATH:$MADGRAPHSYS/lib"
+# && export BOOSTSYS=/usr/boost_1_87_0 \
+# && export PATH=${PATH}:${BOOSTSYS}/bin/ \
+# && export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${BOOSTSYS}/lib/
+
+WORKDIR /usr/src
+# INSTALL PYTHIA8 (v8.313) #
+RUN wget https://www.pythia.org/download/pythia83/pythia8313.tgz -O PYTHIA8_8_3_1.tar.gz \
+    && tar -xzf PYTHIA8_8_3_1.tar.gz
+RUN mv PYTHIA8_8_3_1.tar.gz tar_files/ \
+    && cd pythia8313 \
+    && ./configure --prefix=/usr --with-root=${ROOTSYS} \
+    --with-lhapdf6=/usr --with-fastjet3=/usr \
+    # --with-mg5mes=${MADGRAPHSYS} \
+    && make install
+
+# # EXPORT PYTHIA TO PATH #
+ENV PYTHIA8 "/usr"
+# ENV PATH "$PATH:$PYTHIA8/bin"
+# ENV LD_LIBRARY_PATH "$LD_LIBRARY_PATH:$PYTHIA8/lib"
+
+WORKDIR /usr
+# INSTALL DELPHES (v3.5.0) #
+# RUN echo 11 > input.txt \
+#     && echo 10 >> input.txt
+# #  -> For U.S. 'Geographic area' and Pacific 'Time zone'
+# RUN DEBIAN_FRONTEND=noninteractive apt-get -y install tcl < input.txt \
+#     && rm input.txt
+RUN wget http://cp3.irmp.ucl.ac.be/downloads/Delphes-3.5.0.tar.gz -O DELPHES_3_5_0.tar.gz \
+    && tar -xzf DELPHES_3_5_0.tar.gz
+RUN mv DELPHES_3_5_0.tar.gz /usr/src/tar_files/ \
+    && cd Delphes-3.5.0/ \
+    && make HAS_PYTHIA8=true
+
+ENV DELPHESSYS "/usr/Delphes-3.5.0"
+ENV PATH "$PATH:$DELPHESSYS/bin"
+ENV LD_LIBRARY_PATH "$LD_LIBRARY_PATH:$DELPHESSYS/lib"
+
+### Enter Mounted Directory ###
+
+WORKDIR /work
+
+### Run Bash ###
+
+CMD ["/bin/bash"]

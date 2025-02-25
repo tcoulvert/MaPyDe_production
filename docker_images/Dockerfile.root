@@ -1,0 +1,59 @@
+FROM ubuntu:latest
+
+### SuperUser (SU) Home Directory ###
+WORKDIR /root
+
+### Install Linux Tools ###
+
+# Install Basic Tools #
+RUN apt-get --assume-yes update
+RUN apt-get --assume-yes install build-essential
+# RUN add-apt-repository --assume-yes universe
+RUN apt-get --assume-yes update
+RUN apt-get --assume-yes install wget
+RUN apt-get --assume-yes install gfortran
+RUN apt-get --assume-yes install curl
+RUN apt-get --assume-yes install vim
+RUN apt-get --assume-yes install less
+RUN apt-get --assume-yes install cmake
+RUN apt-get --assume-yes install rsync
+RUN apt-get --assume-yes install gnuplot
+RUN apt-get --assume-yes install ghostscript
+RUN apt-get --assume-yes install locate
+RUN apt-get --assume-yes install htop
+RUN apt-get --assume-yes install git
+
+# Install Python Packages #
+RUN apt-get --assume-yes install python3
+RUN apt-get --assume-yes install python3-pip
+RUN pip3 install six
+RUN apt-get --assume-yes install python2
+RUN curl https://bootstrap.pypa.io/pip/2.7/get-pip.py --output get-pip.py
+RUN python2 get-pip.py
+
+# Install MG5 NLO Dependencies #
+RUN apt-get --assume-yes install bc
+
+# Install ROOT Dependencies #
+RUN apt-get --assume-yes install libx11-dev
+RUN apt-get --assume-yes install libxpm-dev
+RUN apt-get --assume-yes install libxft-dev
+RUN apt-get --assume-yes install libxext-dev
+RUN apt-get --assume-yes install libssl-dev
+
+### Install ROOT ###
+
+# Install ROOT (v'latest-stable' on source git, v6.32.10 as of 2025-02-12) #
+WORKDIR /usr/src
+RUN git clone --branch latest-stable --depth=1 https://github.com/root-project/root.git
+RUN mkdir root-build \
+    && cd root-build && cmake -DCMAKE_INSTALL_PREFIX=/usr/root /usr/src/root \
+    && cmake --build . --target install
+
+### Enter Mounted Directory ###
+
+WORKDIR /work
+
+### Run Bash ###
+
+CMD ["/bin/bash"]

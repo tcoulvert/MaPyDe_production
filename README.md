@@ -8,14 +8,14 @@ This README assumes you have Apptainer (Singularity) installed.
 ## Software Installation
 
 ### Clone the repo
-'''bash
+```bash
 git clone https://github.com/tcoulvert/MaPyDe_production/tree/main
-'''
+```
 
 ### Build the singularity image
-'''bash
+```bash
 apptainer build heptools.simg docker://tcoulvert/heptools:madgraph-compiled
-'''
+```
 
 ## Editing the code
 You likely need to edit the paths to the singularity image in the `submit_*.py` files under the `scripts_condor` directory. In those files is also where you specify the total number of events you'd like to generate, and the number of events-per-job (determined by how much RAM per job you have access to). I found that for LO ttbar, 100,000 events per madgraph job and 10,000 events per pythia-delphes job worked well within my 4GB RAM per CPU requirements. Both stages took ~10min to complete on the Caltech tier2 cluster.

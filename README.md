@@ -1,40 +1,44 @@
-# hnl_standalone_production
+# HEP Event Production
+This repo contains the necassary tools to produce ttbar events with Madgraph, Pythia, and Delphes *without* using CMSSW. It does, however, assume you have access to a HPC cluster with HTCondor installed (i.e. this repo is tailored towards independent event production for CMS scientists and affiliates). If you need to change the process from ttbar to something else, its simple enough to change the madgraph card and the output directory and file names. If, however, you want to change to a different job manager, that would be more complicated, but the condor scripts can serve as a guide.
+
+If you are a CMS person and you want to use CMSSW, the general form would stay the same, but you would need to change the singularity image to an el8 (or whatever is currently recommended by CMS for condor) image and install + build the packages inside the bash runscripts. But otherwise, the process would be the same.
+
+This README assumes you have Apptainer (Singularity) installed.
 
 ## Software Installation
 
-### on tier2
+### Clone the repo
+'''bash
+git clone https://github.com/tcoulvert/MaPyDe_production/tree/main
+'''
 
-install required softwares from LLP-reinterpretation and used CMSSW_9_4_20
+### Build the singularity image
+'''bash
+apptainer build heptools.simg docker://tcoulvert/heptools:madgraph-compiled
+'''
 
-### on local computer
+## Editing the code
+You likely need to edit the paths to the singularity image in the `submit_*.py` files under the `scripts_condor` directory. In those files is also where you specify the total number of events you'd like to generate, and the number of events-per-job (determined by how much RAM per job you have access to). I found that for LO ttbar, 100,000 events per madgraph job and 10,000 events per pythia-delphes job worked well within my 4GB RAM per CPU requirements. Both stages took ~10min to complete on the Caltech tier2 cluster.
 
-MadGraph 2.8.1   
-Pythia 8.235 (8.303 didn't work for me when I tried linking Pythia with Delphes, but if you are running them separately, then it doesn't matter)  
-Delphes3.4.2  
-ROOT 6.13/02. 
-* Note: For MadGraph, Delphes, and ROOT, these are the only versions that I tried, other versions might or might not work. Only for Pythia, I checked with both Pythia2 and Pythia3, and only Pythia2 was linking to Delphes.
-* For mac user: for some reason, ROOT6.22/04 installed from brew are not compatible with Delphes3.4.2. (Most likely it has to do with brew, not the ROOT version)
+***NOTE***: If you choose to change the number of events per madgraph job, remember to change it in both the `sumbit_madgraph_process.py` file and the `submit_delphes.py` file!! This is because the `submit_delphes.py` file needs to know the number of pythia-delphes jobs per madgraph job in order to find the correct madgraph LHE files. Also, make sure the number of madgraph events per job is integer divisable by the number of pythia-delphes events per job, or else you will not run some event through pythia-delphes.
 
-## MadGraph
-* After installing MadGraph, copy and unzip the HNL model ```model/SM_HeavyN_Gen3Mass_NLO.tgz``` in the MadGraph model directory:```MG5_aMC_v2_8_1/models```
-* run: ```scripts/HNL_grid.py```  to create the textfiles that set the mass/coupling of HNL, using the param and run card in the ```cards``` directory
-  * will create 3 directories: HNL_mg5_GRID_e, HNL_mg5_GRID_mu, HNL_mg5_GRID_tau with one text file for each mass/coupling point in the dir ```mg5_grid```
-* run ```run_HNL.py``` to launch madgraph and create LHE files using the text files in the previous step as inputs
-  * 3 directories created in dir ```mg5_grid```: HNL_GRID_e, HNL_GRID_mu, HNL_GRID_tau
-* ```getCrossSec.py``` uses the MadGraph output directories to obtain/validate the LO cross sections for each MadGraph simulation.
-  * usage: python getCrossSec.py [runNum] [lep] [outfileName]
-* ```submit_madgraph.py``` and ```submit_madgraph_process.py``` to submit madgraph jobs in batch, first one only generate more events, second one generate the process and events.
+
+## Madgraph
+To change the process and parameters of Madgraph, edit the `cards/ttbar_hadronic.txt` file. Details on how to write a madgraph input file and an overview of madgraph itself are [here](https://indico.cern.ch/event/555228/sessions/203428/attachments/1315471/1970459/tutorial-CMSandATLAS-2016.pdf). For an overview of MC production as a whole check out the [2011 KIAS Madgraph school](http://workshop.kias.re.kr/MGLP/?Program) and the talks by [Frank Krauss from the 2007 HCP Summer School](https://indico.cern.ch/event/6238/contributions/speakers).
+
+### Random seed
+Currently, the random seed used by madgraph to generate its events (which **must** be different for every individual job) is updated manually in the `runMadgraph_process.sh` script using the Condor job ProcID. There is a way to tell madgraph you are running multiple runs (sets of events) and have it update the seed automatically, but I wasn't able to figure out how.
+
+### Other ways of running Madgraph
+According to the internet, you should be able to tell madgraph to run – across multiple cores, or runs, or on a cluster – and then run pythia and delphes automatically using the `<madgraph-output-directory>/bin/generate_events.sh` script. For example, [this article by Adarsh Pyarelal](https://adarsh.cc/posts/2016-04-15-madgraph-on-a-cluster.html). However, I was never able to get this to work as anytime I attempted to do so, madgraph would complain I needed to install the `pythia-pgs` package, which hasn;t been supported by its developers for more than 10 years – which madgraph knows, and will tell you as such if you try to install it. If you do choose to install `pythia-pgs` anyways, the installation will likely fail as the package is written in very old Fortran, which doesn't play nicely with the (likely) modern C/C++ you almost certainly have on your machine. If you do manage to get madgraph working this way, please let me know, I tried for many, many hours.
+
+
+## Pythia
+To change the processes and parameters of Pythia, edit the `cards/LHE_condor.cmnd` file. Details on how to write a command file as well as the various capabilities of pythia are given in [this pythia tutorial](http://home.thep.lu.se/~leifg/tutorials/) and in [pythia's documentation](https://pythia.org//latest-manual/Welcome.html). Refreshingly, the pythia documentation is extremely detailed, and describes the methodologies upon which their code is written, and links directly to the papers their taken from.
 
 
 ## Delphes
-* After installing Delphes and pythia, compile Delphes with Pythia linked:
- ```bash  
-  export PYTHIA8=/Users/christinawang/programs/pythia8235/
-  make HAS_PYTHIA8=true
- ```
-* Run the executable DelphesPythia8(takes LHE file and pythia parameters as input in .cmnd file and outputs ROOT file), an example cmnd file is in ```cards/configLHE_CMSSW.cmnd```, where the pythia jet matching parameters are copied from a CMS central WJetsToLNu sample:
-```bash
-./DelphesPythia8 cards/delphes_card_CMS.tcl cards/configLHE_CMSSW.cmnd delphes_nolhe.root
-```
-* Scripts to run in batch:
-  * run ```submit_delphes.py``` to run ```./DelphesPythia8``` for each point in condor
+To change the processes and parameters of Delphes, edit the `cards/delphes_card_CMS_vfj.tcl` file. Details on how to write or modify the param file are given in the [delphes documentation](https://cp3.irmp.ucl.ac.be/projects/delphes/wiki/WorkBook). This is not as robust as pythia's, but in my experience you also don't need to change much in the delphes file for most "standard" analysis configurations.
+
+### Very Fat Jets
+For my use here, I wanted ak15 jets in addition to the CMS standard ak4 and ak8, so I added a function for ak15. Likely you do not want this, and should remove it.

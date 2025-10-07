@@ -52,6 +52,8 @@ set ExecutionPath {
 
   BTagging
   TauTagging
+#  TopTagging
+#  WTagging
 
   UniqueObjectFinder
 
@@ -833,6 +835,57 @@ module TauTagging TauTagging {
   # efficiency formula for tau-jets
   add EfficiencyFormula {15} {0.6}
 }
+
+###########
+# t-tagging
+###########
+
+module TopTagging TopTagging {
+  set JetInputArray JetEnergyScale/jets
+
+  set BitNumber 0
+
+  # add EfficiencyFormula {abs(PDG code)} {efficiency formula as a function of eta and pt}
+  # PDG code = the highest PDG code of a quark or gluon inside DeltaR cone around jet axis
+  # gluon's PDG code has the lowest priority
+
+  # based on https://cds.cern.ch/record/2929534/files/DP2025_010.pdf
+  
+  # default efficiency formula (misidentification rate)
+  add EfficiencyFormula {0} {0.01+0.000038*pt}
+
+  # efficiency formula for c-jets (misidentification rate)
+  add EfficiencyFormula {4} {0.25*tanh(0.018*pt)*(1/(1+ 0.0013*pt))}
+
+  # efficiency formula for b-jets
+  add EfficiencyFormula {5} {0.85*tanh(0.0025*pt)*(25.0/(1+0.063*pt))}
+}
+
+###########
+# W-tagging
+###########
+
+module WTagging WTagging {
+  set JetInputArray JetEnergyScale/jets
+
+  set BitNumber 0
+
+  # add EfficiencyFormula {abs(PDG code)} {efficiency formula as a function of eta and pt}
+  # PDG code = the highest PDG code of a quark or gluon inside DeltaR cone around jet axis
+  # gluon's PDG code has the lowest priority
+
+  # based on https://cds.cern.ch/record/2929534/files/DP2025_010.pdf
+  
+  # default efficiency formula (misidentification rate)
+  add EfficiencyFormula {0} {0.01+0.000038*pt}
+
+  # efficiency formula for c-jets (misidentification rate)
+  add EfficiencyFormula {4} {0.25*tanh(0.018*pt)*(1/(1+ 0.0013*pt))}
+
+  # efficiency formula for b-jets
+  add EfficiencyFormula {5} {0.85*tanh(0.0025*pt)*(25.0/(1+0.063*pt))}
+}
+
 
 #####################################################
 # Find uniquely identified photons/electrons/tau/jets

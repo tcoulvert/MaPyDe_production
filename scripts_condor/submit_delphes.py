@@ -5,6 +5,7 @@
 '''
 
 import os
+import re
 import numpy as np
 coupling = {}
 
@@ -16,7 +17,7 @@ outputDir = "/storage/af/user/tsievert/topNet/SPAtop/simulation/submit/pythiadel
 
 
 nEventsPerJobMadgraph = 100_000
-totalEvents = 2_000_000
+totalEvents = 200_000_000
 nMadgraphJobs = totalEvents // nEventsPerJobMadgraph  # number of madgraph jobs
 maxNEvents = 10_000
 nJobs = totalEvents // maxNEvents  # number of pythia/delphes jobs
@@ -27,7 +28,6 @@ f = open(file_name, "w")
 f.write("Universe = vanilla \n")
 f.write("Executable = ../MaPyDe_production/scripts_condor/runDelphesPythia8.sh \n")
 
-print(outputDir)
 f.write("Arguments = {} $(ProcId) {} {} {} {} {} {}/ \n".format(
     lhe_dirpath, maxNEvents, nJobsPerMadgraphJob, pythia_card, delphes_card, outputDir, os.getenv('HOME')), 
 )

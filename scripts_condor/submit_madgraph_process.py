@@ -10,7 +10,7 @@ mg5 = '/usr/MG5_aMC_v3_5_7/bin/mg5_aMC'
 python = '/usr/bin/python3.10'
 outputDir = '/storage/af/user/tsievert/topNet/SPAtop/simulation/submit/madgraph/ttbar_hadronic'
 nEventsPerJob = 100_000
-nJobs = 2_000_000 // nEventsPerJob
+nJobs = 200_000_000 // nEventsPerJob
 
 
 file_name = 'submit_madgraph.jdl'

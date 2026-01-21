@@ -39,21 +39,16 @@ set ExecutionPath {
   NeutrinoFilter
   GenJetFinder
   GenFatJetFinder
-  GenVeryFatJetFinder
   GenMissingET
   
   FastJetFinder
   FatJetFinder
-  VeryFatJetFinder
 
   JetEnergyScale
 
   JetFlavorAssociation
 
   BTagging
-  TauTagging
-#  TopTagging
-#  WTagging
 
   UniqueObjectFinder
 
@@ -912,26 +907,26 @@ module TreeWriter TreeWriter {
 # add Branch InputArray BranchName BranchClass
   add Branch Delphes/allParticles Particle GenParticle
 
-  add Branch TrackMerger/tracks Track Track
-  add Branch Calorimeter/towers Tower Tower
+#  add Branch TrackMerger/tracks Track Track
+#  add Branch Calorimeter/towers Tower Tower
 
-  add Branch HCal/eflowTracks EFlowTrack Track
-  add Branch ECal/eflowPhotons EFlowPhoton Tower
-  add Branch HCal/eflowNeutralHadrons EFlowNeutralHadron Tower
+#  add Branch HCal/eflowTracks EFlowTrack Track
+#  add Branch ECal/eflowPhotons EFlowPhoton Tower
+#  add Branch HCal/eflowNeutralHadrons EFlowNeutralHadron Tower
 
   add Branch GenJetFinder/jets GenJet Jet
   add Branch GenFatJetFinder/jets GenFatJet Jet
-  add Branch GenVeryFatJetFinder/jets GenVeryFatJet Jet
+#  add Branch GenVeryFatJetFinder/jets GenVeryFatJet Jet
   add Branch GenMissingET/momentum GenMissingET MissingET
  
   add Branch UniqueObjectFinder/jets Jet Jet
-  add Branch UniqueObjectFinder/electrons Electron Electron
-  add Branch UniqueObjectFinder/photons Photon Photon
-  add Branch UniqueObjectFinder/muons Muon Muon
+#  add Branch UniqueObjectFinder/electrons Electron Electron
+#  add Branch UniqueObjectFinder/photons Photon Photon
+#  add Branch UniqueObjectFinder/muons Muon Muon
 
   add Branch FatJetFinder/jets FatJet Jet
-  add Branch VeryFatJetFinder/jets VeryFatJet Jet
+#  add Branch VeryFatJetFinder/jets VeryFatJet Jet
 
-  add Branch MissingET/momentum MissingET MissingET
-  add Branch ScalarHT/energy ScalarHT ScalarHT
+#  add Branch MissingET/momentum MissingET MissingET
+#  add Branch ScalarHT/energy ScalarHT ScalarHT
 }

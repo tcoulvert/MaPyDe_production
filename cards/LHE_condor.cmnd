@@ -21,7 +21,7 @@ Next:numberShowEvent = 0           ! print event record n times
 
 ! 4) Switch on/off the key event generation steps.
 PartonLevel:MPI = on               ! multiparton interactions
-PartonLevel:ISR = off              ! no initial-state radiation
+PartonLevel:ISR = on               ! initial-state radiation
 PartonLevel:FSR = on               ! final-state radiation
 HadronLevel:Hadronize = on         ! hadronization
 HadronLevel:Decay = on             ! decays

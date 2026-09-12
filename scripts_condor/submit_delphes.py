@@ -12,12 +12,16 @@ coupling = {}
 
 pythia_card = '/storage/af/user/tsievert/topNet/SPAtop/simulation/MaPyDe_production/cards/LHE_condor.cmnd'
 delphes_card = '/storage/af/user/tsievert/topNet/SPAtop/simulation/MaPyDe_production/cards/delphes_card_CMS_vfj.tcl'
-lhe_dirpath = "/storage/af/user/tsievert/topNet/SPAtop/simulation/submit/madgraph/ttbar_hadronic"
-outputDir = "/storage/af/user/tsievert/topNet/SPAtop/simulation/submit/pythiadelphes/ttbar_hadronic"
+# lhe_dirpath = "/storage/af/user/tsievert/topNet/SPAtop/simulation/submit/madgraph/ttbar_hadronic"
+lhe_dirpath = "/storage/af/user/tsievert/topNet/SPAtop/simulation/submit/madgraph/ttbar_semileptonicWm"
+# lhe_dirpath = "/storage/af/user/tsievert/topNet/SPAtop/simulation/submit/madgraph/ttbar_semileptonicWp"
+# outputDir = "/storage/af/user/tsievert/topNet/SPAtop/simulation/submit/pythiadelphes/ttbar_hadronic"
+outputDir = "/storage/af/user/tsievert/topNet/SPAtop/simulation/submit/pythiadelphes/ttbar_semileptonicWm"
+# outputDir = "/storage/af/user/tsievert/topNet/SPAtop/simulation/submit/pythiadelphes/ttbar_semileptonicWp"
 
 
-nEventsPerJobMadgraph = 100_000
-totalEvents = 200_000_000
+nEventsPerJobMadgraph = 10_000
+totalEvents = 1_000_000
 nMadgraphJobs = totalEvents // nEventsPerJobMadgraph  # number of madgraph jobs
 maxNEvents = 10_000
 nJobs = totalEvents // maxNEvents  # number of pythia/delphes jobs
@@ -26,7 +30,7 @@ nJobsPerMadgraphJob = nJobs // nMadgraphJobs
 file_name = 'submit_pythia_delphes.jdl'
 f = open(file_name, "w")
 f.write("Universe = vanilla \n")
-f.write("Executable = ../MaPyDe_production/scripts_condor/runDelphesPythia8.sh \n")
+f.write("Executable = MaPyDe_production/scripts_condor/runDelphesPythia8.sh \n")
 
 f.write("Arguments = {} $(ProcId) {} {} {} {} {} {}/ \n".format(
     lhe_dirpath, maxNEvents, nJobsPerMadgraphJob, pythia_card, delphes_card, outputDir, os.getenv('HOME')), 

@@ -13,7 +13,10 @@ ProcID=$6
 homeDir=$7
 currentDir=`pwd`
 runDir=${currentDir}/madgraph/
-outputFile=ttbar_hadronic_${ProcID}.lhe.gz
+# outputFile=ttbar_hadronic_${ProcID}.lhe.gz
+# outputFile=ttbar_semileptonicWm_${ProcID}.lhe.gz
+# outputFile=ttbar_semileptonicWp_${ProcID}.lhe.gz
+outputFile=ttbar_semileptonic_${ProcID}.lhe.gz
 
 rm -rf ${runDir}
 mkdir -p ${runDir}
@@ -56,7 +59,10 @@ then
 	##job finished, copy file to T2
 	echo "copying output file to ${outputDirectory}"
 	mkdir -p ${outputDirectory}
-	cp ${runDir}/ttbar_hadronic/Events/run_01/unweighted_events.lhe.gz ${outputDirectory}/${outputFile}
+	# cp ${runDir}/ttbar_hadronic/Events/run_01/unweighted_events.lhe.gz ${outputDirectory}/${outputFile}
+	# cp ${runDir}/ttbar_semileptonicWm/Events/run_01/unweighted_events.lhe.gz ${outputDirectory}/${outputFile}
+	# cp ${runDir}/ttbar_semileptonicWp/Events/run_01/unweighted_events.lhe.gz ${outputDirectory}/${outputFile}
+	cp ${runDir}/ttbar_semileptonic/Events/run_01/unweighted_events.lhe.gz ${outputDirectory}/${outputFile}
 
 	if [ -f ${outputDirectory}/${outputFile} ]
 	then

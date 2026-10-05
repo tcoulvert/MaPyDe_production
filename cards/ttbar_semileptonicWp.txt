@@ -1,4 +1,4 @@
-generate p p > t t~, (t > w+ b, w+ > l+ vl), (t~ > w- b~, w- > j j)
+generate p p > t t~ j j, (t > w+ b, w+ > l+ vl), (t~ > w- b~, w- > j j)
 output ttbar_semileptonicWp
 launch
 

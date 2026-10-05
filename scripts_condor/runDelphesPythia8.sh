@@ -15,9 +15,15 @@ homeDir=$8
 currentDir=`pwd`
 user=${homeDir#*/storage/af/user/}
 runDir=${currentDir}/pythiadelphes/
-lhe_file=${lhe_dir}/ttbar_hadronic_$((${ProcID} / ${nJobsPerMadgraphJob})).lhe.gz
+# lhe_file=${lhe_dir}/ttbar_hadronic_$((${ProcID} / ${nJobsPerMadgraphJob})).lhe.gz
+# lhe_file=${lhe_dir}/ttbar_semileptonicWm_$((${ProcID} / ${nJobsPerMadgraphJob})).lhe.gz
+# lhe_file=${lhe_dir}/ttbar_semileptonicWp_$((${ProcID} / ${nJobsPerMadgraphJob})).lhe.gz
+lhe_file=${lhe_dir}/ttbar_semileptonic_$((${ProcID} / ${nJobsPerMadgraphJob})).lhe.gz
 lhe_split_index=$((${ProcID} % ${nJobsPerMadgraphJob}))
-outputFile=ttbar_hadronic_${ProcID}.root
+# outputFile=ttbar_hadronic_${ProcID}.root
+# outputFile=ttbar_semileptonicWm_${ProcID}.root
+# outputFile=ttbar_semileptonicWp_${ProcID}.root
+outputFile=ttbar_semileptonic_${ProcID}.root
 
 rm -rf ${runDir}
 mkdir -p ${runDir}

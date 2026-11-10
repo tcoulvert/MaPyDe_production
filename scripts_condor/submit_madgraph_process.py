@@ -1,39 +1,35 @@
 '''
 generate madgraph lhe files, include both generating the process and launching the process and generate events
 '''
-import os
+import os, shutil
 coupling = {}
 
 
-# madgraphCard = '/storage/af/user/tsievert/topNet/SPAtop/simulation/MaPyDe_production/cards/ttbar_hadronic.txt'
-# madgraphCard = '/storage/af/user/tsievert/topNet/SPAtop/simulation/MaPyDe_production/cards/ttbar_semileptonicWm.txt'
-# madgraphCard = '/storage/af/user/tsievert/topNet/SPAtop/simulation/MaPyDe_production/cards/ttbar_semileptonicWp.txt'
-# madgraphCard = '/storage/af/user/tsievert/topNet/SPAtop/simulation/MaPyDe_production/cards/ttbar_semileptonic.txt'
-# madgraphCard = '/storage/af/user/tsievert/topNet/SPAtop/simulation/MaPyDe_production/cards/4t_hadronic.txt'
-madgraphCard = '/storage/af/user/tsievert/topNet/SPAtop/simulation/MaPyDe_production/cards/qcd4j.txt'
+# madgraph_string = 'ttbar_hadronic'
+# madgraph_string = 'ttbar_semileptonic'
+madgraph_string = '4t_hadronic'
+# madgraph_string = 'qcd4j'
+madgraphCard = f'/storage/af/user/tsievert/topNet/SPAtop/simulation/MaPyDe_production/cards/{madgraph_string}.txt'
 mg5 = '/usr/MG5_aMC_v3_5_7/bin/mg5_aMC'
 python = '/usr/bin/python3.10'
-# outputDir = '/storage/af/user/tsievert/topNet/SPAtop/simulation/submit/madgraph/ttbar_hadronic'
-# outputDir = '/storage/af/user/tsievert/topNet/SPAtop/simulation/submit_Wm2j/madgraph/ttbar_semileptonicWm'
-# outputDir = '/storage/af/user/tsievert/topNet/SPAtop/simulation/submit_Wp2j/madgraph/ttbar_semileptonicWp'
-# outputDir = '/storage/af/user/tsievert/topNet/SPAtop/simulation/submit_semi/madgraph/ttbar_semileptonic'
-# outputDir = '/storage/af/user/tsievert/topNet/SPAtop/simulation/submit_4t/madgraph/4t_hadronic'
-outputDir = '/storage/af/user/tsievert/topNet/SPAtop/simulation/submit_qcd4j/madgraph/qcd4j'
+outputDir = f'/storage/af/user/tsievert/topNet/SPAtop/simulation/submit_{madgraph_string}/madgraph/{madgraph_string}'
+if os.path.exists(outputDir): shutil.rmtree(outputDir[:outputDir.find(f'submit_{madgraph_string}')+len(f'submit_{madgraph_string}')])
 os.makedirs(outputDir, exist_ok=False)
 os.makedirs(os.path.join('/'.join(outputDir.split('/')[:-2]), 'log'), exist_ok=False)
-nEventsPerJob = 100_000
-nJobs = 10_000_000 // nEventsPerJob
+# nEventsPerJob = 10_000
+nEventsPerJob = 10
+nJobs = 10 // nEventsPerJob
 
 
-file_name = 'submit_madgraph.jdl'
+file_name = f'submit_{madgraph_string}/submit_madgraph.jdl'
 f = open(file_name, "w")
 f.write("Universe = vanilla \n")
-f.write("Executable = ../MaPyDe_production/scripts_condor/runMadgraph_process.sh \n")
-f.write("Arguments = {} {} {} {} {} $(ProcID) {}/ \n".format(madgraphCard, outputDir, mg5, python, nEventsPerJob, os.getenv('HOME')))
+f.write("Executable = MaPyDe_production/scripts_condor/runMadgraph_process.sh \n")
+f.write("Arguments = {} {} {} {} {} $(ProcID) {}/ \n".format(madgraphCard, os.path.normpath(outputDir), mg5, python, nEventsPerJob, os.getenv('HOME')))
 
-f.write("Log = log/madgraph.log \n")
-f.write("Output = log/madgraph.$(ProcID).out \n")
-f.write("Error = log/madgraph.$(ProcID).err \n")
+f.write(f"Log = submit_{madgraph_string}/log/madgraph.log \n")
+f.write(f"Output = submit_{madgraph_string}/log/madgraph.$(ProcID).out \n")
+f.write(f"Error = submit_{madgraph_string}/log/madgraph.$(ProcID).err \n")
 
 f.write("RequestMemory = 4GB \n")
 f.write("RequestCpus = 1 \n")

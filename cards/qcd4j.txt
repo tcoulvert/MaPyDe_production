@@ -1,7 +1,7 @@
 define p = p b b~
 define j = j b b~
 generate p p > j j j j
-output qcd_4j
+output qcd4j
 launch
 
 set run_card ebeam1 7000

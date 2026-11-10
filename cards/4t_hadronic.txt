@@ -1,5 +1,5 @@
 generate p p > t t~ t t~, (t > w+ b, w+ > j j), (t~ > w- b~, w- > j j), (t > w+ b, w+ > j j), (t~ > w- b~, w- > j j)
-output ttbar_hadronic
+output 4t_hadronic
 launch
 
 set run_card ebeam1 7000

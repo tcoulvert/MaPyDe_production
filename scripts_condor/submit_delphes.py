@@ -5,25 +5,17 @@
 '''
 
 import os
-import re
-import numpy as np
 coupling = {}
 
 
 pythia_card = '/storage/af/user/tsievert/topNet/SPAtop/simulation/MaPyDe_production/cards/LHE_condor.cmnd'
 delphes_card = '/storage/af/user/tsievert/topNet/SPAtop/simulation/MaPyDe_production/cards/delphes_card_CMS_vfj.tcl'
-# lhe_dirpath = "/storage/af/user/tsievert/topNet/SPAtop/simulation/submit/madgraph/ttbar_hadronic"
-# lhe_dirpath = "/storage/af/user/tsievert/topNet/SPAtop/simulation/submit_Wm2j/madgraph/ttbar_semileptonicWm"
-# lhe_dirpath = "/storage/af/user/tsievert/topNet/SPAtop/simulation/submit_Wp2j/madgraph/ttbar_semileptonicWp"
-# lhe_dirpath = "/storage/af/user/tsievert/topNet/SPAtop/simulation/submit_semi/madgraph/ttbar_semileptonic"
-# lhe_dirpath = "/storage/af/user/tsievert/topNet/SPAtop/simulation/submit_4t/madgraph/4t_hadronic"
-lhe_dirpath = "/storage/af/user/tsievert/topNet/SPAtop/simulation/submit_qcd4j/madgraph/qcd4j"
-# outputDir = "/storage/af/user/tsievert/topNet/SPAtop/simulation/submit/pythiadelphes/ttbar_hadronic"
-# outputDir = "/storage/af/user/tsievert/topNet/SPAtop/simulation/submit_Wm2j/pythiadelphes/ttbar_semileptonicWm"
-# outputDir = "/storage/af/user/tsievert/topNet/SPAtop/simulation/submit_Wp2j/pythiadelphes/ttbar_semileptonicWp"
-# outputDir = "/storage/af/user/tsievert/topNet/SPAtop/simulation/submit_semi/pythiadelphes/ttbar_semileptonic"
-# outputDir = "/storage/af/user/tsievert/topNet/SPAtop/simulation/submit_4t/pythiadelphes/4t_hadronic"
-outputDir = "/storage/af/user/tsievert/topNet/SPAtop/simulation/submit_qcd4j/pythiadelphes/qcd4j"
+# madgraph_string = 'ttbar_hadronic'
+# madgraph_string = 'ttbar_semileptonic'
+# madgraph_string = '4t_hadronic'
+madgraph_string = 'qcd4j'
+lhe_dirpath = f"/storage/af/user/tsievert/topNet/SPAtop/simulation/submit_{madgraph_string}/madgraph/{madgraph_string}"
+outputDir = f"/storage/af/user/tsievert/topNet/SPAtop/simulation/submit_{madgraph_string}/pythiadelphes/{madgraph_string}"
 os.makedirs(outputDir, exist_ok=False)
 
 
@@ -34,18 +26,18 @@ maxNEvents = 10_000
 nJobs = totalEvents // maxNEvents  # number of pythia/delphes jobs
 nJobsPerMadgraphJob = nJobs // nMadgraphJobs
 
-file_name = 'submit_pythia_delphes.jdl'
+file_name = f'submit_{madgraph_string}/submit_pythia_delphes.jdl'
 f = open(file_name, "w")
 f.write("Universe = vanilla \n")
-f.write("Executable = ../MaPyDe_production/scripts_condor/runDelphesPythia8.sh \n")
+f.write("Executable = MaPyDe_production/scripts_condor/runDelphesPythia8.sh \n")
 
 f.write("Arguments = {} $(ProcId) {} {} {} {} {} {}/ \n".format(
-    lhe_dirpath, maxNEvents, nJobsPerMadgraphJob, pythia_card, delphes_card, outputDir, os.getenv('HOME')), 
+    os.path.normpath(lhe_dirpath), maxNEvents, nJobsPerMadgraphJob, pythia_card, delphes_card, os.path.normpath(outputDir), os.getenv('HOME')), 
 )
 
-f.write("Log = log/pythiadelphes.log \n")
-f.write("Output = log/pythiadelphes.$(ProcId).out \n")
-f.write("Error = log/pythiadelphes.$(ProcId).err \n")
+f.write(f"Log = submit_{madgraph_string}/log/pythiadelphes.log \n")
+f.write(f"Output = submit_{madgraph_string}/log/pythiadelphes.$(ProcId).out \n")
+f.write(f"Error = submit_{madgraph_string}/log/pythiadelphes.$(ProcId).err \n")
 
 
 f.write("RequestMemory = 2000 \n")

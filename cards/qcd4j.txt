@@ -1,0 +1,10 @@
+define p = p b b~
+define j = j b b~
+generate p p > j j j j
+output qcd_4j
+launch
+
+set run_card ebeam1 7000
+set run_card ebeam2 7000
+set run_card ptj 25
+set run_card etaj -1

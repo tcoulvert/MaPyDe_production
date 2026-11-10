@@ -15,11 +15,15 @@ delphes_card = '/storage/af/user/tsievert/topNet/SPAtop/simulation/MaPyDe_produc
 # lhe_dirpath = "/storage/af/user/tsievert/topNet/SPAtop/simulation/submit/madgraph/ttbar_hadronic"
 # lhe_dirpath = "/storage/af/user/tsievert/topNet/SPAtop/simulation/submit_Wm2j/madgraph/ttbar_semileptonicWm"
 # lhe_dirpath = "/storage/af/user/tsievert/topNet/SPAtop/simulation/submit_Wp2j/madgraph/ttbar_semileptonicWp"
-lhe_dirpath = "/storage/af/user/tsievert/topNet/SPAtop/simulation/submit_semi/madgraph/ttbar_semileptonic"
+# lhe_dirpath = "/storage/af/user/tsievert/topNet/SPAtop/simulation/submit_semi/madgraph/ttbar_semileptonic"
+# lhe_dirpath = "/storage/af/user/tsievert/topNet/SPAtop/simulation/submit_4t/madgraph/4t_hadronic"
+lhe_dirpath = "/storage/af/user/tsievert/topNet/SPAtop/simulation/submit_qcd4j/madgraph/qcd4j"
 # outputDir = "/storage/af/user/tsievert/topNet/SPAtop/simulation/submit/pythiadelphes/ttbar_hadronic"
 # outputDir = "/storage/af/user/tsievert/topNet/SPAtop/simulation/submit_Wm2j/pythiadelphes/ttbar_semileptonicWm"
 # outputDir = "/storage/af/user/tsievert/topNet/SPAtop/simulation/submit_Wp2j/pythiadelphes/ttbar_semileptonicWp"
-outputDir = "/storage/af/user/tsievert/topNet/SPAtop/simulation/submit_semi/pythiadelphes/ttbar_semileptonic"
+# outputDir = "/storage/af/user/tsievert/topNet/SPAtop/simulation/submit_semi/pythiadelphes/ttbar_semileptonic"
+# outputDir = "/storage/af/user/tsievert/topNet/SPAtop/simulation/submit_4t/pythiadelphes/4t_hadronic"
+outputDir = "/storage/af/user/tsievert/topNet/SPAtop/simulation/submit_qcd4j/pythiadelphes/qcd4j"
 os.makedirs(outputDir, exist_ok=False)
 
 

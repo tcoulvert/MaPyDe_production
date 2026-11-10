@@ -8,17 +8,21 @@ coupling = {}
 # madgraphCard = '/storage/af/user/tsievert/topNet/SPAtop/simulation/MaPyDe_production/cards/ttbar_hadronic.txt'
 # madgraphCard = '/storage/af/user/tsievert/topNet/SPAtop/simulation/MaPyDe_production/cards/ttbar_semileptonicWm.txt'
 # madgraphCard = '/storage/af/user/tsievert/topNet/SPAtop/simulation/MaPyDe_production/cards/ttbar_semileptonicWp.txt'
-madgraphCard = '/storage/af/user/tsievert/topNet/SPAtop/simulation/MaPyDe_production/cards/ttbar_semileptonic.txt'
+# madgraphCard = '/storage/af/user/tsievert/topNet/SPAtop/simulation/MaPyDe_production/cards/ttbar_semileptonic.txt'
+# madgraphCard = '/storage/af/user/tsievert/topNet/SPAtop/simulation/MaPyDe_production/cards/4t_hadronic.txt'
+madgraphCard = '/storage/af/user/tsievert/topNet/SPAtop/simulation/MaPyDe_production/cards/qcd4j.txt'
 mg5 = '/usr/MG5_aMC_v3_5_7/bin/mg5_aMC'
 python = '/usr/bin/python3.10'
 # outputDir = '/storage/af/user/tsievert/topNet/SPAtop/simulation/submit/madgraph/ttbar_hadronic'
 # outputDir = '/storage/af/user/tsievert/topNet/SPAtop/simulation/submit_Wm2j/madgraph/ttbar_semileptonicWm'
 # outputDir = '/storage/af/user/tsievert/topNet/SPAtop/simulation/submit_Wp2j/madgraph/ttbar_semileptonicWp'
-outputDir = '/storage/af/user/tsievert/topNet/SPAtop/simulation/submit_semi/madgraph/ttbar_semileptonic'
+# outputDir = '/storage/af/user/tsievert/topNet/SPAtop/simulation/submit_semi/madgraph/ttbar_semileptonic'
+# outputDir = '/storage/af/user/tsievert/topNet/SPAtop/simulation/submit_4t/madgraph/4t_hadronic'
+outputDir = '/storage/af/user/tsievert/topNet/SPAtop/simulation/submit_qcd4j/madgraph/qcd4j'
 os.makedirs(outputDir, exist_ok=False)
 os.makedirs(os.path.join('/'.join(outputDir.split('/')[:-2]), 'log'), exist_ok=False)
-nEventsPerJob = 10_000
-nJobs = 1_000_000 // nEventsPerJob
+nEventsPerJob = 100_000
+nJobs = 10_000_000 // nEventsPerJob
 
 
 file_name = 'submit_madgraph.jdl'

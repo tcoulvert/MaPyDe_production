@@ -56,8 +56,13 @@ then
 	echo "------------------------"
 
 	##job finished, copy file to T2
-	ls ${runDir}
-	echo "copying ${outDir}/<file> to ${outputDirectory}/${outputFile}"
+	ls ${runDir}/${outDir}
+	echo "------------------------"
+	ls ${runDir}/${outDir}/Events
+	echo "------------------------"
+	ls ${runDir}/${outDir}/Events/run_01
+	echo "------------------------"
+	echo "copying ${runDir}/${outDir}/Events/run_01/unweighted_events.lhe.gz to ${outputDirectory}/${outputFile}"
 	mkdir -p ${outputDirectory}
 	cp ${runDir}/${outDir}/Events/run_01/unweighted_events.lhe.gz ${outputDirectory}/${outputFile}
 

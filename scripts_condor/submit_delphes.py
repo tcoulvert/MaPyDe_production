@@ -19,8 +19,8 @@ outputDir = f"/storage/af/user/tsievert/topNet/SPAtop/simulation/submit_{madgrap
 os.makedirs(outputDir, exist_ok=False)
 
 
-nEventsPerJobMadgraph = 10_000
-totalEvents = 1_000_000
+nEventsPerJobMadgraph = 100_000
+totalEvents = 10_000_000
 nMadgraphJobs = totalEvents // nEventsPerJobMadgraph  # number of madgraph jobs
 maxNEvents = 10_000
 nJobs = totalEvents // maxNEvents  # number of pythia/delphes jobs

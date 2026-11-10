@@ -16,9 +16,8 @@ outputDir = f'/storage/af/user/tsievert/topNet/SPAtop/simulation/submit_{madgrap
 if os.path.exists(outputDir): shutil.rmtree(outputDir[:outputDir.find(f'submit_{madgraph_string}')+len(f'submit_{madgraph_string}')])
 os.makedirs(outputDir, exist_ok=False)
 os.makedirs(os.path.join('/'.join(outputDir.split('/')[:-2]), 'log'), exist_ok=False)
-# nEventsPerJob = 10_000
-nEventsPerJob = 10
-nJobs = 10 // nEventsPerJob
+nEventsPerJob = 100_000
+nJobs = 10_000_000 // nEventsPerJob
 
 
 file_name = f'submit_{madgraph_string}/submit_madgraph.jdl'

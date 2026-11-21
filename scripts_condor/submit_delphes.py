@@ -19,10 +19,10 @@ outputDir = f"/storage/af/user/tsievert/topNet/SPAtop/simulation/submit_{madgrap
 os.makedirs(outputDir, exist_ok=False)
 
 
-nEventsPerJobMadgraph = 100_000
+nEventsPerJobMadgraph = 1_000
 totalEvents = 10_000_000
 nMadgraphJobs = totalEvents // nEventsPerJobMadgraph  # number of madgraph jobs
-maxNEvents = 10_000
+maxNEvents = 1_000
 nJobs = totalEvents // maxNEvents  # number of pythia/delphes jobs
 nJobsPerMadgraphJob = nJobs // nMadgraphJobs
 
@@ -40,7 +40,7 @@ f.write(f"Output = submit_{madgraph_string}/log/pythiadelphes.$(ProcId).out \n")
 f.write(f"Error = submit_{madgraph_string}/log/pythiadelphes.$(ProcId).err \n")
 
 
-f.write("RequestMemory = 2000 \n")
+f.write("RequestMemory = 1000 \n")
 f.write("RequestCpus = 1 \n")
 f.write("RequestDisk = 4 \n")
 f.write("+JobQueue=\"Short\" \n")

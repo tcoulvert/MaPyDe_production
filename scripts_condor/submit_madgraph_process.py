@@ -7,8 +7,8 @@ coupling = {}
 
 # madgraph_string = 'ttbar_hadronic'
 # madgraph_string = 'ttbar_semileptonic'
-madgraph_string = '4t_hadronic'
-# madgraph_string = 'qcd4j'
+# madgraph_string = '4t_hadronic'
+madgraph_string = 'qcd4j'
 madgraphCard = f'/storage/af/user/tsievert/topNet/SPAtop/simulation/MaPyDe_production/cards/{madgraph_string}.txt'
 mg5 = '/usr/MG5_aMC_v3_5_7/bin/mg5_aMC'
 python = '/usr/bin/python3.10'
@@ -16,7 +16,7 @@ outputDir = f'/storage/af/user/tsievert/topNet/SPAtop/simulation/submit_{madgrap
 if os.path.exists(outputDir): shutil.rmtree(outputDir[:outputDir.find(f'submit_{madgraph_string}')+len(f'submit_{madgraph_string}')])
 os.makedirs(outputDir, exist_ok=False)
 os.makedirs(os.path.join('/'.join(outputDir.split('/')[:-2]), 'log'), exist_ok=False)
-nEventsPerJob = 100_000
+nEventsPerJob = 1_000
 nJobs = 10_000_000 // nEventsPerJob
 
 
@@ -34,13 +34,11 @@ f.write("RequestMemory = 4GB \n")
 f.write("RequestCpus = 1 \n")
 f.write("RequestDisk = 4GB \n")
 f.write("+JobQueue=\"Short\" \n")
-# f.write("+JobQueue=\"Long\" \n")
 
 f.write("+RunAsOwner = True \n")
-f.write("+InteractiveUser = true \n")
+f.write("+InteractiveUser = True \n")
 f.write("+SingularityImage = \"{}/public/heptools-compiled.simg\" \n".format(os.getenv('HOME')))
 f.write('+SingularityBindCVMFS = False \n')
-f.write("run_as_owner = True \n")
 f.write("x509userproxy = {}/x509_proxy \n".format(os.getenv('HOME')))
 f.write("should_transfer_files = YES \n")
 f.write("when_to_transfer_output = ON_EXIT_OR_EVICT \n")
